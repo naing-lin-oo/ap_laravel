@@ -25,7 +25,7 @@ Route::get('/', function () {
 //     return view('home', compact('data'));
 // });
 
-Route::get('/', [HomeController::class, 'index']);
+Route::resource('posts', HomeController::class);
 
 // Route::get('contact', function() {
 //     $data = [
