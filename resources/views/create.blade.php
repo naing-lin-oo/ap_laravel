@@ -7,7 +7,7 @@
                 New Post
             </div>
             <div class="card-body">
-            <!-- @if ($errors->any())
+            @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
                         @foreach ($errors->all() as $error)
@@ -15,24 +15,36 @@
                         @endforeach
                     </ul>
                 </div>
-            @endif -->
+            @endif
+
                 <form action="/posts" method="POST">
                     @csrf
                     <div class="form-group">
                         <label for="Name">Name</label>
                         <input value="{{ old('name') }}" type="text" name="name" class="form-control" placeholder="Enter Blog Title">  
                     </div>
-                    @error('name')
+                    <!-- @error('name')
                             <div class="alert alert-danger">{{ $message }}</div>
-                    @enderror  
+                    @enderror   -->
                     <div class="form-group">
                         <label for="Description">Description</label>
                         <textarea value="{{ old('description') }}" type="textarea" name="description" class="form-control"  placeholder="Enter Blog Description"></textarea>
                     </div>
-                    @error('description')
+                    <!-- @error('description')
                         <div class="alert alert-danger">{{ $message }}</div>
-                    @enderror
+                    @enderror -->
+
+                    <div class="form-group">
+                        <select name="category_id" id="" class="form-control">
+                            <option value="">Select Category</option>
+                            @foreach($categories as $cat)
+                                <option value="{{ $cat->id }}"> {{ $cat->name }} </option>
+                            @endforeach
+                        </select>
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Submit</button>
+
                     <a href="/posts" class="btn btn-success">Back</a>
                 </form>
             </div>

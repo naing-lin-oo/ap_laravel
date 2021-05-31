@@ -6,9 +6,14 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Requests\storePostRequest;
+use App\Models\Category;
 
 class HomeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -28,7 +33,8 @@ class HomeController extends Controller
      */
     public function create()
     {
-        return view('create');
+        $categories = Category::all();
+        return view('create', compact('categories'));
     }
 
     /**
@@ -43,11 +49,8 @@ class HomeController extends Controller
         // $post->name = $request->name;
         // $post->description = $request->description;
         // $post->save();
-
-        Post::create([
-            'name' => $request->name,
-            'description' => $request->description,
-        ]);
+        $validated = $request->validated();
+        Post::create($validated);
         
         return redirect('/posts');
     }
@@ -72,7 +75,10 @@ class HomeController extends Controller
      */
     public function edit(Post $post)
     {
-        return view('edit', compact('post'));
+       
+        
+        $categories = Category::all();
+        return view('edit', compact('post', 'categories'));
     }
 
     /**
@@ -87,10 +93,8 @@ class HomeController extends Controller
         // $post->name = $request->name;
         // $post->description = $request->description;
         // $post->save();
-        $post->update([
-            'name' => $request->name,
-            'description' => $request->description,
-        ]);
+        $validated = $request->validated();
+        $post->update($validated);
         return redirect('/posts');
     }
 
