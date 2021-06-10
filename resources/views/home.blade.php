@@ -8,12 +8,18 @@
             <h4 style="float: right;">{{Auth::user()->name}}</h4>
         </div>
         <br>
+        @if(session('status'))
+            <div class="alert alert-success alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Success!</strong> {{ session('status') }}
+            </div>
+        @endif
         <div class="card">
-        <div class="card-header" style="text-align: center;">
-            Content
-        </div>
-            @foreach($data as $post)
-                <div class="card-body">
+            <div class="card-header" style="text-align: center;">
+                Content
+            </div>
+            <div class="card-body">
+                @foreach($data as $post)
                     <div>
                         <h5 class="card-title">{{ $post->name }}</h5>
                         <p class="card-text">{{ $post->description }}</p>
@@ -28,8 +34,8 @@
                         </div>
                         <hr>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
     </div>
 @endsection

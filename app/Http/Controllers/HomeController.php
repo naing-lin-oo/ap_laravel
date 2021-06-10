@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Requests\storePostRequest;
-use App\Models\Category;
+use App\Mail\PostCreated;
+use App\Mail\PostStored;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -19,10 +23,15 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        // Mail::raw('Hello World', function($msg){
+        //     $msg->to('nainglinoo19497@gmail.com')->subject('AP Index Function');
+        // });
         // $data = Post::all();
+        // dd(config('aprogrammer.info.third'));
         $data = Post::where('user_id', auth()->id())->OrderBy('id','desc')->get();
+        // $request->session()->flash('status', 'Task was successful');
         return view('home', compact('data'));
     }
 
@@ -44,15 +53,14 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(storePostRequest $request)
-    {
+    { 
         // $post = new Post();
         // $post->name = $request->name;
         // $post->description = $request->description;
         // $post->save();
         $validated = $request->validated();
-        Post::create($validated);
-        
-        return redirect('/posts');
+        $post = Post::create($validated + ['user_id'=>Auth::user()->id]);
+        return redirect('/posts')->with('status', config('aprogrammer.message.created'));
     }
 
     /**
@@ -102,7 +110,7 @@ class HomeController extends Controller
         // $post->save();
         $validated = $request->validated();
         $post->update($validated);
-        return redirect('/posts');
+        return redirect('/posts')->with('status', config('aprogrammer.message.updated'));
     }
 
     /**
@@ -114,6 +122,6 @@ class HomeController extends Controller
     public function destroy(Post $post)
     {
         $post->delete();
-        return redirect('/posts');
+        return redirect('/posts')->with('status', config('aprogrammer.message.deleted'));
     }
 }
