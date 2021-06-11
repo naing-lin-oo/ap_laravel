@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PostCreatedEvent;
 use App\Models\Post;
+use App\Models\User;
+use App\Mail\PostStored;
 use App\Models\Category;
+use App\Mail\PostCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+//use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Route;
 use App\Http\Requests\storePostRequest;
-use App\Mail\PostCreated;
-use App\Mail\PostStored;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\PostCreatedNotification;
 
 class HomeController extends Controller
 {
@@ -30,6 +35,10 @@ class HomeController extends Controller
         // });
         // $data = Post::all();
         // dd(config('aprogrammer.info.third'));
+        // $user = User::find(1);
+        // $user->notify(new PostCreatedNotification());
+        // Notification::send(User::find(1), new PostCreatedNotification());
+        // echo "Noti Sent";exit;Above Code Testing Notification 
         $data = Post::where('user_id', auth()->id())->OrderBy('id','desc')->get();
         // $request->session()->flash('status', 'Task was successful');
         return view('home', compact('data'));
@@ -60,6 +69,7 @@ class HomeController extends Controller
         // $post->save();
         $validated = $request->validated();
         $post = Post::create($validated + ['user_id'=>Auth::user()->id]);
+        event(new PostCreatedEvent($post));
         return redirect('/posts')->with('status', config('aprogrammer.message.created'));
     }
 
